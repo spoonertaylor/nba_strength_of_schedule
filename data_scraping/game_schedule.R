@@ -18,9 +18,10 @@ years = 2008:2019
 #' 
 #' @param year NBA season, for example 2018-19 season is 2019
 #' @param month Full length month name
-#' @return Data frame with two rows for each game with each team in the game as the 'team_name'
-#' Columns: season, game_date, game_time_start, team_name, team_points, opponent_name, opponent_points,
-#' result, location
+#' @return Data frame with one row for each game with
+#' Columns: 
+#'  season, game_date, game_time_start, home_team, away_team, home_points, 
+#'  away_points, game_code
 get_games_in_month = function(year, month) {
   month = tolower(month)
   # Create url
@@ -70,33 +71,46 @@ get_games_in_month = function(year, month) {
                                   season = year)
   games = games %>% dplyr::mutate(home_points = as.integer(home_points),
                                   away_points = as.integer(away_points))
-
-  # For each game, create a row for the home team and the away team
-  home_teams = games %>% dplyr::mutate(location = 'home',
-                                       result = ifelse(home_points > away_points, 'win', 'loss')) %>%
-    dplyr::select(season, game_date, game_time_start,
-                  team_name = home_team,
-                  team_points = home_points,
-                  opponent_name = away_team,
-                  opponent_points = away_points,
-                  result,
-                  location)
-
-  away_teams = games %>% dplyr::mutate(location = 'away',
-                                       result = ifelse(home_points < away_points, 'win', 'loss')) %>%
-    dplyr::select(season, game_date, game_time_start,
-                  team_name = away_team,
-                  team_points = away_points,
-                  opponent_name = home_team,
-                  opponent_points = home_points,
-                  result,
-                  location)
-
-  games = rbind(home_teams, away_teams)
+  
+  games = dplyr::left_join(games,
+                           teams %>% dplyr::select(team_name, bbref_team_id),
+                           by = c("home_team" = "team_name"))
+  
+  # Add the bbref game code
+  games = games %>% dplyr::mutate(game_date2 = stringr::str_replace_all(game_date, "-", "")) %>%
+            dplyr::mutate(game_code = 
+                            ifelse(home_team == 'Charlotte Bobcats',
+                                 paste0(game_date2, '0CHA'),
+                                 paste0(game_date2, '0', bbref_team_id)))
+  
+  games = games %>% dplyr::select(-game_date2, -bbref_team_id)
+  # # For each game, create a row for the home team and the away team
+  # home_teams = games %>% dplyr::mutate(location = 'home',
+  #                                      result = ifelse(home_points > away_points, 'win', 'loss')) %>%
+  #   dplyr::select(season, game_date, game_time_start,
+  #                 team_name = home_team,
+  #                 team_points = home_points,
+  #                 opponent_name = away_team,
+  #                 opponent_points = away_points,
+  #                 result,
+  #                 location)
+  # 
+  # away_teams = games %>% dplyr::mutate(location = 'away',
+  #                                      result = ifelse(home_points < away_points, 'win', 'loss')) %>%
+  #   dplyr::select(season, game_date, game_time_start,
+  #                 team_name = away_team,
+  #                 team_points = away_points,
+  #                 opponent_name = home_team,
+  #                 opponent_points = home_points,
+  #                 result,
+  #                 location)
+  # 
+  # games = rbind(home_teams, away_teams)
   return(games)
 } 
 
 # * Run function ----
+teams = read.csv('../data/nba_bball_team_id.csv', stringsAsFactors = FALSE)
 i = 1
 game_list = list()
 for (year in years) {
@@ -109,3 +123,6 @@ for (year in years) {
 }
 
 games_all = dplyr::bind_rows(game_list)
+
+# * Save game data ----
+write.csv(games_all, file = "../data/games_all_wide.csv")

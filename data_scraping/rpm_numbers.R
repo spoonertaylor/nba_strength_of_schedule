@@ -59,7 +59,7 @@ get_rpm_numbers = function(year, page_number) {
 # * Get data for seasons 2014-2019 ----
 rpm = data.frame()
 for (year in 2014:2019) {
-  # Last Updated: April 2, 2019
+  # Last Updated: April 21, 2019
   rpm_pages = lapply(1:20, function(page) get_rpm_numbers(year, page))
   
   rpm_temp = bind_rows(rpm_pages)  
