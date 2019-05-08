@@ -107,12 +107,14 @@ get_team_strength = function(boxscore) {
 teams = read.csv('Documents/nba_strength_of_schedule/data/nba_bball_team_id.csv', stringsAsFactors = FALSE)
 rpm = read.csv('Documents/nba_strength_of_schedule/data/nba_rpm.csv', stringsAsFactors = FALSE)
 games = read.csv('Documents/nba_strength_of_schedule/data/games_with_rpm.csv', stringsAsFactors = FALSE)
+games_done = games %>% filter(game_date <= as.Date('2019-04-03'))
 games = games %>% dplyr::filter(season %in% c(2014:2019))
-games$home_rpm = NA
-games$away_rpm = NA
+games = games %>% filter(game_date > as.Date('2019-04-03'))
+#games$home_rpm = NA
+#games$away_rpm = NA
 
 # * Add weight to games data frame ----
-for (i in 3603:nrow(games)) {
+for (i in 1:nrow(games)) {
   print(paste0("Game ", i, " of ", nrow(games), ": ", i/nrow(games)))
 #  if (all(!is.na(games[i, "home_rpm"]), !is.na(games[i, "away_rpm"]))) {
 #    next
@@ -147,6 +149,8 @@ for (i in 3603:nrow(games)) {
 }
 
 games = games %>% select(-contains("X"))
+
+games = rbind(games_done, games)
 # * Save data ----
 write.csv(games, file = "Documents/nba_strength_of_schedule/data/games_with_rpm.csv",
           row.names = FALSE)

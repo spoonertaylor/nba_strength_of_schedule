@@ -135,6 +135,8 @@ games = games %>% select(-contains("X"))
 new_games = get_games_in_month(2019, 'april')
 new_games = new_games %>% filter(game_date > as.Date('2019-04-03'))
 new_games = new_games %>% mutate(home_rpm = NA, away_rpm = NA)
+games = games %>% mutate(game_date = as.Date(game_date))
+new_games = new_games %>% mutate(game_date = as.Date(game_date))
 games = rbind(games, new_games)
-write.csv(games, file = 'Documents/nba_strength_of_schedule/data/games',
+write.csv(games, file = 'Documents/nba_strength_of_schedule/data/games_with_rpm.csv',
           row.names = FALSE)
