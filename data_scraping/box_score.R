@@ -50,7 +50,7 @@ bball_ref_boxscore = function(team, game_code) {
                 "-", substr(game_code, 7, 8))
   date = as.Date(date, format = "%Y-%m-%d")
   year = as.integer(substr(game_code, 1, 4))
-  if (lubridate::month(date) <= 12) {
+  if (lubridate::month(date) <= 12 & lubridate::month(date) >= 10) {
     year = year + 1
   }
 
@@ -104,19 +104,16 @@ get_team_strength = function(boxscore) {
 }
 
 # * Data ----
-teams = read.csv('../data/nba_bball_team_id.csv', stringsAsFactors = FALSE)
-rpm = read.csv('../data/nba_rpm.csv', stringsAsFactors = FALSE)
-games = read.csv('../data/games_with_rpm.csv', stringsAsFactors = FALSE)
+teams = read.csv('Documents/nba_strength_of_schedule/data/nba_bball_team_id.csv', stringsAsFactors = FALSE)
+rpm = read.csv('Documents/nba_strength_of_schedule/data/nba_rpm.csv', stringsAsFactors = FALSE)
+games = read.csv('Documents/nba_strength_of_schedule/data/games_with_rpm.csv', stringsAsFactors = FALSE)
 games = games %>% dplyr::filter(season %in% c(2014:2019))
 games$home_rpm = NA
 games$away_rpm = NA
 
 # * Add weight to games data frame ----
-for (i in 1:nrow(games)) {
-  if (games[i, "season"] != 2019) {
-    next
-  }
-  
+for (i in 3603:nrow(games)) {
+  print(paste0("Game ", i, " of ", nrow(games), ": ", i/nrow(games)))
 #  if (all(!is.na(games[i, "home_rpm"]), !is.na(games[i, "away_rpm"]))) {
 #    next
 #  }
@@ -126,24 +123,30 @@ for (i in 1:nrow(games)) {
   # Get home team weight
   if (games[i, "home_team"] == 'Charlotte Bobcats') {
     home_boxscore = bball_ref_boxscore('CHA', game_code)
+    home_team = 'CHA'
   }
   else {
     home_boxscore = bball_ref_boxscore(teams[teams$team_name == games[i, "home_team"], 'bbref_team_id'], game_code)    
+    home_team = teams[teams$team_name == games[i, "home_team"], 'bbref_team_id']
   }
   # Get away team weight
   if (games[i, "away_team"] == 'Charlotte Bobcats') {
     away_boxscore = bball_ref_boxscore('CHA', game_code)
+    away_team = 'CHA'
   }
   else {
     away_boxscore = bball_ref_boxscore(teams[teams$team_name == games[i, "away_team"], 'bbref_team_id'], game_code)    
+    away_team = teams[teams$team_name == games[i, "away_team"], 'bbref_team_id']
   }  
   
   home_weight = get_team_strength(home_boxscore)
   games[i, "home_rpm"] = home_weight
   away_weight = get_team_strength(away_boxscore)
   games[i, "away_rpm"] = away_weight
+  
 }
 
 games = games %>% select(-contains("X"))
 # * Save data ----
-#write.csv(games, file = "games_with_rpm.csv")
+write.csv(games, file = "Documents/nba_strength_of_schedule/data/games_with_rpm.csv",
+          row.names = FALSE)

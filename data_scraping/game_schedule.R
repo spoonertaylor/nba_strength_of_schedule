@@ -126,3 +126,15 @@ games_all = dplyr::bind_rows(game_list)
 
 # * Save game data ----
 write.csv(games_all, file = "../data/games_all_wide.csv")
+
+# * Add missing games ----
+games = read.csv('Documents/nba_strength_of_schedule/data/games_with_rpm.csv',
+                 stringsAsFactors = FALSE)
+games = games %>% select(-contains("X"))
+# Scrape games after 4/3/2019:
+new_games = get_games_in_month(2019, 'april')
+new_games = new_games %>% filter(game_date > as.Date('2019-04-03'))
+new_games = new_games %>% mutate(home_rpm = NA, away_rpm = NA)
+games = rbind(games, new_games)
+write.csv(games, file = 'Documents/nba_strength_of_schedule/data/games',
+          row.names = FALSE)

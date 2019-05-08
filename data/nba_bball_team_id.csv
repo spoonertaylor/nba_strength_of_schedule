@@ -1,31 +1,31 @@
-team_name,bbref_team_id,espn_bbref_team_id,latitude,longitude
-Atlanta Hawks,ATL,ATL,33.754,-84.386
-Boston Celtics,BOS,BOS,42.36,71.059
-Brooklyn Nets,BRK,BKN,40.678,73.944
-Charlotte Hornets,CHO,CHA,35.227,80.843
-Chicago Bulls,CHI,CHI,41.878,87.629
-Cleveland Cavaliers,CLE,CLE,41.499,81.694
-Dallas Mavericks,DAL,DAL,32.777,96.797
-Denver Nuggets,DEN,DEN,39.739,104.99
-Detroit Pistons,DET,DET,42.3314,83.046
-Golden State Warriors,GSW,GS,37.775,122.419
-Houston Rockets,HOU,HOU,29.76,95.369
-Indiana Pacers,IND,IND,39.768,86.158
-Los Angeles Clippers,LAC,LAC,34.052,118.243
-Los Angeles Lakers,LAL,LAL,34.052,118.243
-Memphis Grizzlies,MEM,MEM,35.149,90.049
-Miami Heat,MIA,MIA,25.762,80.192
-Milwaukee Bucks,MIL,MIL,43.039,87.906
-Minnesota Timberwolves,MIN,MIN,46.729,94.686
-New Orleans Pelicans,NOP,NO,29.951,90.072
-New York Knicks,NYK,NY,40.719,74.006
-Oklahoma City Thunder,OKC,OKC,35.467,97.516
-Orlando Magic,ORL,ORL,28.538,81.379
-Philadelphia 76ers,PHI,PHI,39.953,75.165
-Phoenix Suns,PHO,PHX,33.448,112.074
-Portland Trail Blazers,POR,POR,45.515,122.679
-Sacramento Kings,SAC,SAC,38.582,121.494
-San Antonio Spurs,SAS,SA,29.424,98.494
-Toronto Raptors,TOR,TOR,43.653,79.383
-Utah Jazz,UTA,UTAH,39.321,111.094
-Washington Wizards,WAS,WSH,38.907,77.037
+team_name,bbref_team_id,espn_bbref_team_id,latitude,longitude,time_zone
+Atlanta Hawks,ATL,ATL,33.754,-84.386,eastern
+Boston Celtics,BOS,BOS,42.36,71.059,eastern
+Brooklyn Nets,BRK,BKN,40.678,73.944,eastern
+Charlotte Hornets,CHO,CHA,35.227,80.843,eastern
+Chicago Bulls,CHI,CHI,41.878,87.629,central
+Cleveland Cavaliers,CLE,CLE,41.499,81.694,eastern
+Dallas Mavericks,DAL,DAL,32.777,96.797,central
+Denver Nuggets,DEN,DEN,39.739,104.99,mountain
+Detroit Pistons,DET,DET,42.3314,83.046,eastern
+Golden State Warriors,GSW,GS,37.775,122.419,pacific
+Houston Rockets,HOU,HOU,29.76,95.369,central
+Indiana Pacers,IND,IND,39.768,86.158,eastern
+Los Angeles Clippers,LAC,LAC,34.052,118.243,pacific
+Los Angeles Lakers,LAL,LAL,34.052,118.243,pacific
+Memphis Grizzlies,MEM,MEM,35.149,90.049,central
+Miami Heat,MIA,MIA,25.762,80.192,eastern
+Milwaukee Bucks,MIL,MIL,43.039,87.906,central
+Minnesota Timberwolves,MIN,MIN,46.729,94.686,central
+New Orleans Pelicans,NOP,NO,29.951,90.072,central
+New York Knicks,NYK,NY,40.719,74.006,eastern
+Oklahoma City Thunder,OKC,OKC,35.467,97.516,central
+Orlando Magic,ORL,ORL,28.538,81.379,eastern
+Philadelphia 76ers,PHI,PHI,39.953,75.165,eastern
+Phoenix Suns,PHO,PHX,33.448,112.074,mountain
+Portland Trail Blazers,POR,POR,45.515,122.679,pacific
+Sacramento Kings,SAC,SAC,38.582,121.494,pacific
+San Antonio Spurs,SAS,SA,29.424,98.494,central
+Toronto Raptors,TOR,TOR,43.653,79.383,eastern
+Utah Jazz,UTA,UTAH,39.321,111.094,mountain
+Washington Wizards,WAS,WSH,38.907,77.037,eastern
