@@ -1,5 +1,5 @@
 team_name,bbref_team_id,espn_bbref_team_id,latitude,longitude,time_zone
-Atlanta Hawks,ATL,ATL,33.754,-84.386,eastern
+Atlanta Hawks,ATL,ATL,33.754,84.386,eastern
 Boston Celtics,BOS,BOS,42.36,71.059,eastern
 Brooklyn Nets,BRK,BKN,40.678,73.944,eastern
 Charlotte Hornets,CHO,CHA,35.227,80.843,eastern
