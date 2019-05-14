@@ -37,6 +37,13 @@ games = games %>% arrange(game_code) %>%
   # Fill first game of the season with -1
   mutate(days_since_last_game = ifelse(is.na(days_since_last_game), -1, days_since_last_game))
 
+# Opponent
+games = games %>% arrange(game_code) %>%
+  group_by(season, opponent_name) %>%
+  mutate(opp_last_game_date = lag(game_date, order_by = game_date)) %>%
+  mutate(opp_days_since_last_game = as.Date(game_date) - as.Date(opp_last_game_date))
+  
+
 # ** HOME STANDS/AWAY TRIPS ----
 games = games %>% arrange(game_code) %>%
   group_by(season, team_name) %>%
@@ -47,6 +54,11 @@ games = games %>% arrange(game_code) %>%
 games = games %>% arrange(game_code) %>%
   group_by(season, team_name) %>%
   mutate(days_since_last_home_game = ave(ifelse(is_home, 0, days_since_last_game), cumsum(is_home), FUN = cumsum))
+
+# Opponent
+games = games %>% arrange(game_code) %>%
+  group_by(season, opponent_name) %>%
+  mutate(opp_days_since_last_home_game = ave(ifelse(!is_home, 0, opp_days_since_last_game), cumsum(!is_home), FUN = cumsum))
 
 # ** MILES ----
 games = games %>% arrange(game_code) %>%
@@ -60,6 +72,19 @@ games = games %>% arrange(game_code) %>%
   # Convert to miles
   mutate(miles_from_last_game = miles_from_last_game / 1609.344) %>%
   select(-last_lat, -last_lon)
+# Opponent
+games = games %>% arrange(game_code) %>%
+  group_by(season, opponent_name) %>%
+  mutate(last_lon = lag(longitude, order_by = game_code),
+         last_lat = lag(latitude, order_by = game_code)) %>%
+  rowwise() %>%
+  mutate(opp_miles_from_last_game = geosphere::distHaversine(p1 = c(longitude, latitude),
+                                                             p2 = c(last_lon, last_lat))
+  ) %>% ungroup() %>%
+  # Convert to miles
+  mutate(opp_miles_from_last_game = opp_miles_from_last_game / 1609.344) %>%
+  select(-last_lat, -last_lon)
+
 # Miles on current road trip
 games = games %>% arrange(game_code) %>%
   group_by(season, team_name) %>%
@@ -82,6 +107,21 @@ games = games %>% arrange(game_code) %>%
          )) %>%
   mutate(time_change = time - lag(time, order_by = game_code)) %>%
   select(-time)
+
+# ** ROLLING RPM ----
+games = games %>% arrange(game_code) %>%
+  group_by(season, team_name) %>%
+  mutate(rolling_team_rpm = lag(team_rpm, order_by = game_code)) %>%
+  group_by(season, team_name, isna = is.na(rolling_team_rpm)) %>%
+  mutate(rolling_team_rpm = ifelse(isna, NA,
+                                    cummean(rolling_team_rpm * (game_number-1)) / cummean((game_number-1)))) %>% 
+  ungroup() %>% select(-isna) %>%
+  group_by(season, opponent_name) %>%
+  mutate(rolling_opponent_rpm = lag(opponent_rpm, order_by = game_code)) %>%
+  group_by(season, opponent_name, isna = is.na(rolling_opponent_rpm)) %>%
+  mutate(rolling_opponent_rpm = ifelse(isna, NA,
+                                       cummean(rolling_opponent_rpm * (game_number-1)) / cummean((game_number-1)))) %>%
+  ungroup() %>% select(-isna)
 
 # ** SAVE ----
 write.csv(games, file = 'Documents/nba_strength_of_schedule/data/games_with_factors.csv',
